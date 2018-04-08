@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2973471054ac094fb54962f427c91de, type: 3}
+  m_Name: Mission3
+  m_EditorClassIdentifier: 
+  _Gold:
+  - 1000
+  - 0
+  - 85
+  - 180
+  _Silver:
+  - 10000
+  - 0
+  - 70
+  - 250
+  _Bronze:
+  - 100000
+  - 0
+  - 45
+  - 350
+  _SelectedQuest: 03000000000000000300000001000000
+  _Created: 01000101

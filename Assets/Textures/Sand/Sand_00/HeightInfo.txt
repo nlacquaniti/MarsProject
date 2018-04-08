@@ -1,0 +1,3 @@
+Displacement for Sand exported 1/2/2018 9:06:51 AM
+Auto-level : On
+Height = displacement texel value * 31.3 cm

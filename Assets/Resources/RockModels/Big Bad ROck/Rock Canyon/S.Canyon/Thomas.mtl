@@ -1,0 +1,40 @@
+newmtl Face
+Ka 0.5647059 0.5647059 0.5647059
+Kd 0.5647059 0.5647059 0.5647059
+d 1
+Tr 1
+map_Ka Face.png
+map_Kd Face.png
+map_d Face.png
+newmtl Thom1
+Ka 0.5647059 0.5647059 0.5647059
+Kd 0.5647059 0.5647059 0.5647059
+d 1
+Tr 1
+map_Ka Thom1.png
+map_Kd Thom1.png
+map_d Thom1.png
+newmtl Thom1_1
+Ka 0.5647059 0.5647059 0.5647059
+Kd 0.5647059 0.5647059 0.5647059
+d 1
+Tr 1
+map_Ka Thom1_1.png
+map_Kd Thom1_1.png
+map_d Thom1_1.png
+newmtl Thom2
+Ka 0.5647059 0.5647059 0.5647059
+Kd 0.5647059 0.5647059 0.5647059
+d 1
+Tr 1
+map_Ka Thom2.png
+map_Kd Thom2.png
+map_d Thom2.png
+newmtl Thom2_1
+Ka 0.5647059 0.5647059 0.5647059
+Kd 0.5647059 0.5647059 0.5647059
+d 1
+Tr 1
+map_Ka Thom2_1.png
+map_Kd Thom2_1.png
+map_d Thom2_1.png
