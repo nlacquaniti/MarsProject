@@ -26,7 +26,7 @@ All these feature were manually coded by the game programmers in the team.
 
 ## Personal tasks
 
-I've worked on various trask like :
+I've worked on various tasks like :
 
 - UI programming.
 
