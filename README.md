@@ -24,6 +24,55 @@ All these feature were manually coded by the game programmers in the team.
 
 
 
+## Personal tasks
+
+I've worked on various trask like :
+
+- UI programming.
+
+- Tool programming.
+
+- Vehicle customization.
+
+- In-game quests logic.
+
+- Loading / Saving files.
+
+
+Below is an example of the tool that i've created for the designers to create / modify all the quests inside the game.
+
+When you open the tool window you can choose on which scene you want to create / modify (all the scene are named based on the zone / mission number)
+
+
+![](https://imgur.com/ltgxYbf.png)
+
+
+
+
+Then you can choose the quest type that you need to create in that scene
+
+
+![](https://imgur.com/Oip096D.png)
+
+
+
+Finnaly you can specify the medals times (all the times can be modified witht he tool when you want so don't worry if they're not perfect). When you press create quest Unity will load the scene so the tool can instantiate all the prefab inside the map and you can move them around.
+
+This tool had been really useful for the designers and for the coders. With this tool creating the quest is really fast and clean, and is useful for the main menu UI (when i was developing the UI i'd realise that i need all the quests times inside the UI and this tool was created to communicate with the scene. When someone create the quest I save all the times inside a Scriptable Object on the Resource folder so I can access all the data from there without problems).
+
+
+
+![](https://imgur.com/4uo0oNb.png)
+
+
+This tool saved to us a lot of time and energy to create all the quests inside the game. And even now it can be extended if we need to create new quests type.
+
+
+
+
+
+
+
 
 ## Concepts
 
