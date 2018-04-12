@@ -32,6 +32,8 @@ I've worked on various tasks like :
 
 - Tool programming.
 
+- Minimap logic.
+
 - Vehicle customization.
 
 - In-game quests logic.
