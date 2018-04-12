@@ -79,5 +79,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wheelsParticleObj: {fileID: 1858732257521464, guid: 973d90b32fe47af458c4aee23bb0ecc3,
     type: 2}
-  sandParticleColor: {r: 0.9098039, g: 0.39607844, b: 0.11372549, a: 0.48235294}
+  sandParticleColor: {r: 0.14705884, g: 0.036040913, b: 0.011894468, a: 0.366}
   iceParticleColor: {r: 1, g: 1, b: 1, a: 0.47058824}

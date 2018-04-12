@@ -9,9 +9,13 @@ public class FuelRecharging : MonoBehaviour
     private bool _CollisionTrigger = true;
     private MeshRenderer _Mesh;
 
+    private UnityEngine.UI.Image _StationIcon = null;
+
     private void Awake()
     {
         _Mesh = this.gameObject.GetComponent<MeshRenderer>();
+        _StationIcon = Resources.Load<UnityEngine.UI.Image>("MinimapIcons/" + "StationIcon");
+        StartCoroutine(WaitingMinimap());
     }
 
 
@@ -33,8 +37,20 @@ public class FuelRecharging : MonoBehaviour
                 NewVehicleController.vehicleController.currentFuel += recharge;
             }
 
+            StartCoroutine(MiniMap.instance.RemoveIcon(this.gameObject));
+
 
         }
+    }
+
+    private System.Collections.IEnumerator WaitingMinimap()
+    {
+        while (MiniMap.instance == null)
+        {
+            yield return null;
+        }
+
+        MiniMap.instance.GetIcon(_StationIcon, this.gameObject, false);
     }
 
 }

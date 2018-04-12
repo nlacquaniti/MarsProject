@@ -61,6 +61,7 @@ public class EnvPropertyScript : MonoBehaviour
             audioSource.clip = AudioManager.Audio.GetInfluenceZonesSoundSettings()[0].audioFile;
             audioSource.volume = AudioManager.Audio.GetInfluenceZonesSoundSettings()[0].volume;
             audioSource.pitch = AudioManager.Audio.GetInfluenceZonesSoundSettings()[0].pitch;
+            audioSource.Play();
         }
         else if (propertyType == PropertyType.RADIATION)
         {
@@ -75,6 +76,7 @@ public class EnvPropertyScript : MonoBehaviour
             audioSource.clip = AudioManager.Audio.GetInfluenceZonesSoundSettings()[1].audioFile;
             audioSource.volume = AudioManager.Audio.GetInfluenceZonesSoundSettings()[1].volume;
             audioSource.pitch = AudioManager.Audio.GetInfluenceZonesSoundSettings()[1].pitch;
+            audioSource.Play();
         }
     }
 
@@ -156,50 +158,58 @@ public class EnvPropertyScript : MonoBehaviour
         {
             float distanceFromCenter = (NewVehicleController.vehicleController.transform.position - transform.position).magnitude;
             float finalForce = 1;
-            finalForce *= (((value * 50000)) / (distanceFromCenter));
+
+            finalForce *= ((((value * 50000)) / (distanceFromCenter)) /10) * transform.parent.localScale.x;
             Vector3 force = -transform.right * finalForce;
+
             NewVehicleController.vehicleController.rb.AddForce(force, ForceMode.Force);
             NewVehicleController.vehicleController.currentWindDirection = force.normalized;
-            NewVehicleController.vehicleController.currentWindSpeed = Mathf.Round(finalForce / (100f * distanceFromCenter));
+            NewVehicleController.vehicleController.currentWindSpeed = Mathf.Round(finalForce / 1250); //Mathf.Round(finalForce / (100f * distanceFromCenter));
             yield return new WaitForSeconds(0.05f);
         }
     }
 
     private IEnumerator AddRadiation()
     {
-        while (onRadiation && !NewVehicleController.vehicleController.isShielded)
+        while (onRadiation)
         {
-            Color newAlpha = Color.white;
-
-            for (int i = 0; i < HUDList.HUDImages.Count; i++)
+            if (!NewVehicleController.vehicleController.isShielded)
             {
-                newAlpha = HUDList.HUDImages[i].color;
+                Color newAlpha = Color.white;
+
+                for (int i = 0; i < HUDList.HUDImages.Count; i++)
+                {
+                    newAlpha = HUDList.HUDImages[i].color;
+                    newAlpha.a = Random.Range(0, 0.1f);
+                    HUDList.HUDImages[i].color = newAlpha;
+
+                }
+
+                for (int i = 0; i < HUDList.HUDTexts.Count; i++)
+                {
+                    newAlpha = HUDList.HUDTexts[i].color;
+                    newAlpha.a = Random.Range(0, 0.1f);
+                    HUDList.HUDTexts[i].color = newAlpha;
+                }
+
+                newAlpha = HUDList.miniMap.color;
                 newAlpha.a = Random.Range(0, 0.1f);
-                HUDList.HUDImages[i].color = newAlpha;
+                HUDList.miniMap.color = newAlpha;
 
+                newAlpha.b = Random.Range(0, 1f);
+                newAlpha.r = Random.Range(0, 1f);
+                newAlpha.g = Random.Range(0, 1f);
+
+                HUDList.disturb.color = newAlpha;
             }
-
-            for (int i = 0; i < HUDList.HUDTexts.Count; i++)
+            else
             {
-                newAlpha = HUDList.HUDTexts[i].color;
-                newAlpha.a = Random.Range(0, 0.1f);
-                HUDList.HUDTexts[i].color = newAlpha;
+                StopRadiation();
             }
-
-            newAlpha = HUDList.miniMap.color;
-            newAlpha.a = Random.Range(0, 0.1f);
-            HUDList.miniMap.color = newAlpha;
-
-            newAlpha.b = Random.Range(0, 1f);
-            newAlpha.r = Random.Range(0, 1f);
-            newAlpha.g = Random.Range(0, 1f);
-
-            HUDList.disturb.color = newAlpha;
 
             yield return new WaitForSeconds(0.05f);
         }
 
-        StopRadiation();
         yield return null;
     }
 

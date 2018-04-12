@@ -1,8 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 
 
 public class SelectMap : MonoBehaviour
@@ -11,15 +13,20 @@ public class SelectMap : MonoBehaviour
     Image mapImage = null;
     Camera mapCamera = null;
     Image mapBackground = null;
-    Image mapBorder = null;
+    //Image mapBorder = null;
     GameObject selectMapObject = null;
     GameObject playerTarget = null;
     GameObject playerIcon = null;
-    
+    GameObject finalTargetIcon = null;
+
     List<Image> imagesIcons = new List<Image>();
     bool iconCreated = false;
     int mapSize = 900;
     public Sprite[] mapsPreviews;
+    //public Animation playerIconAnimation = null;
+    public RuntimeAnimatorController playerIconController;
+    public RuntimeAnimatorController objectiveIconController;
+    public RuntimeAnimatorController finalTargerIconController;
 
 
 
@@ -118,6 +125,17 @@ public class SelectMap : MonoBehaviour
     public void UpdateIconsVisibility(int iconIndex, int enabled)
     {
         imagesIcons[iconIndex].color = new Color(1, 1, 1, enabled);
+        if (imagesIcons[iconIndex].gameObject.GetComponent<Animator>() != null)
+        {
+            if (enabled == 1)
+            {
+                imagesIcons[iconIndex].gameObject.GetComponent<Animator>().enabled = true;
+            }
+            else
+            {
+                imagesIcons[iconIndex].gameObject.GetComponent<Animator>().enabled = false;
+            }
+        }
     }
 
     void LateUpdate()
@@ -135,7 +153,7 @@ public class SelectMap : MonoBehaviour
 
             Vector3 rotation = Vector3.zero;
             rotation.z = -playerTarget.transform.rotation.eulerAngles.y;
-
+            
             playerIcon.transform.rotation = Quaternion.Euler(rotation);
         }
     }
@@ -143,23 +161,35 @@ public class SelectMap : MonoBehaviour
     IEnumerator CreateIcons()
     {
         yield return new WaitForSeconds(0.5f);
-
+                
         if (MiniMap.instance != null)
         {
             for (int i = 0; i < MiniMap.instance._Icons.Length; i++)
             {
-                if (MiniMap.instance._Icons[i].Icon.sprite != null)
+                if (MiniMap.instance._Icons[i].TargetPos != null)
                 {
                     GameObject target = MiniMap.instance._Icons[i].TargetPos;
+                    GameObject iconObject = new GameObject(MiniMap.instance._Icons[i].TargetPos.name);
+                    Image img = iconObject.AddComponent<Image>();
 
-                    string iconName = "Icon";
                     if (target.tag == "Player")
                     {
                         playerTarget = MiniMap.instance._Icons[i].TargetPos;
-                        iconName = "PlayerIcon";
-                    }                  
+                        playerIcon = iconObject;
+                        iconObject.AddComponent<Animator>().runtimeAnimatorController = playerIconController;
+                    }
+                    else if (target.name.Contains("Target"))
+                    {
+                        iconObject.AddComponent<Animator>().runtimeAnimatorController = target.name == "FinalTarget" ? finalTargerIconController : objectiveIconController;
 
-                    GameObject iconObject = new GameObject(iconName);
+                        if (target.name == "FinalTarget")
+                        {                                                        
+                            iconObject.GetComponent<Animator>().enabled = MiniMap.instance._Icons[i].Icon.enabled;
+                            img.color = MiniMap.instance._Icons[i].Icon.enabled ? new Color(1, 1, 1, 1) : new Color(1, 1, 1, 0);
+                            finalTargetIcon = iconObject;
+                        }
+                    }
+
                     iconObject.transform.parent = selectMapObject.transform;
                     iconObject.transform.localScale = new Vector3(1f, 1f, 1f);
                                         
@@ -171,13 +201,29 @@ public class SelectMap : MonoBehaviour
 
                     position += new Vector3(offsetX, offsetZ, 0);
                     iconObject.transform.localPosition = position;
-
-                    Image img = iconObject.AddComponent<Image>();
+                                        
                     img.sprite = MiniMap.instance._Icons[i].Icon.sprite;
-                    img.rectTransform.sizeDelta = new Vector2(32, 32);
 
+                    if (target.name != "FinalTarget")
+                    {
+                        if (target.tag == "Player")
+                        {
+                            img.rectTransform.sizeDelta = new Vector2(38, 38);
+                        }
+                        else
+                        {
+                            img.rectTransform.sizeDelta = new Vector2(32, 32);
+                        }
+                    }
+                    else
+                    {
+                        img.rectTransform.sizeDelta = new Vector2(64, 64);
+                    }
+                    
                     if (target.tag.Contains("EnvProperty"))
                     {
+                        img.rectTransform.sizeDelta = new Vector2(24, 24);
+
                         if (!MiniMap.instance._Icons[i].Icon.name.Contains("ICON"))
                         {
                             float scale = 0.16f;
@@ -198,14 +244,15 @@ public class SelectMap : MonoBehaviour
 
                     img.enabled = false;
                     imagesIcons.Add(img);
-
-                    if (playerIcon == null)
-                    {
-                        playerIcon = GameObject.Find("PlayerIcon");
-                    }
                 }
             }
 
+			if (finalTargetIcon != null) 
+			{
+				finalTargetIcon.transform.SetAsLastSibling();
+			}
+            
+            playerIcon.transform.SetAsLastSibling();
             MiniMap.instance.mainMap = this;
         }
 

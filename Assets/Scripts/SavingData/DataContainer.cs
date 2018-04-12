@@ -53,7 +53,7 @@ public static class DataContainer
 
         if (_Match != null)
         {
-            return time > _Match.record;
+            return time < _Match.record;
         }
         else
         {

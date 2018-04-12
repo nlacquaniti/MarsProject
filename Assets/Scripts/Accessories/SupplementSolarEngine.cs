@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class SupplementSolarEngine : Accessory
 {
-
     float supplementValue = 1;
 
     IEnumerator mCooldown;
-    //IEnumerator mSupplSolarOn;
     IEnumerator mTurnSupplSolarOn;
+    AudioSource audioSource = null;
+    
 
     void Start ()
     {
-        
+        audioSource = gameObject.AddComponent<AudioSource>();
         fileManager = new FileManager();
         type = TypeOfAccessories.Solar_Propeller;
         base.Start();
@@ -31,8 +31,6 @@ public class SupplementSolarEngine : Accessory
                 
                 isActive = false;
                 StopCoroutine(mTurnSupplSolarOn);
-                //StopCoroutine(mSupplSolarOn);
-
                 StartCoroutine(mCooldown = Cooldown());
 
             }
@@ -49,26 +47,12 @@ public class SupplementSolarEngine : Accessory
     }
 
 
-    /*IEnumerator SupplSolarOn()
-    {
-        float timer = duration;
-        print("Entro directional Arrow on");
-
-        while (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        print("Call turn off method");
-        TurnSupplSolarOff();
-        StartCoroutine(mCooldown = Cooldown());
-
-    }*/
-
     IEnumerator TurnSupplSolarOn()
     {
         isActive = true;
-		float timer = duration;
+        PlaySound();
+
+        float timer = duration;
         
         while (timer > 0)
         {
@@ -83,6 +67,19 @@ public class SupplementSolarEngine : Accessory
 
 		isActive = false;
 		StartCoroutine(mCooldown = Cooldown());
+    }
+
+
+    void PlaySound()
+    {
+        int index = isActive ? 16 : 16;
+
+        audioSource.clip = AudioManager.Audio.GetAccessoriesSoundSettings()[index].audioFile;
+        audioSource.volume = AudioManager.Audio.GetAccessoriesSoundSettings()[index].volume;
+        audioSource.pitch = AudioManager.Audio.GetAccessoriesSoundSettings()[index].pitch;
+        audioSource.maxDistance = AudioManager.Audio.GetAccessoriesSoundSettings()[index].distance;
+        audioSource.loop = false;
+        audioSource.Play();
     }
 }
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
+using DG.Tweening;
 
 
 public enum ObjectiveSounds { TimerBlink, LostMedal, CollectAchivement, BronzeGoal, SilverGoal, GoldGoal, MissionFailed, RefillFuel, CollectPoint }
@@ -71,6 +71,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private SoundSettingsSemplified shieldingOFF;
     [SerializeField] private SoundSettingsSemplified airBearing;
     [SerializeField] private SoundSettingsSemplified helicopterON;
+    [SerializeField] private SoundSettingsSemplified aeolianPropeller;
+    [SerializeField] private SoundSettingsSemplified solarPropeller;
+    [SerializeField] private SoundSettingsSemplified radiationPropeller;
     private SoundSettingsSemplified[] accessoriesSoundSettings;
     
     [Header(" - VEHICLE EXTRA")]
@@ -106,9 +109,13 @@ public class AudioManager : MonoBehaviour
     private SoundSettingsSemplified[] menuSoundSettings;
 
     [Header(" - MUSIC")]
+    [SerializeField] private SoundSettingsSemplified menuMusic;
     [SerializeField] private SoundSettingsSemplified[] musicArray;
     float currentMusicMinVolume = 0;
     float currentMusicMinPitch = 0;
+    private int musicIndex = 0;
+    bool isSwitchInUse = false;
+    private Text musicText;
 
 
     void Start()
@@ -122,6 +129,7 @@ public class AudioManager : MonoBehaviour
         } 
 
         InitializeSound();
+        PlayMenuMusic();
     }
 
     void InitializeSound()
@@ -142,9 +150,24 @@ public class AudioManager : MonoBehaviour
 
     void Update()
     {
-        if (!musicSource.isPlaying)
+        if (SceneManager.GetActiveScene().name.Contains("Mission") || SceneManager.GetActiveScene().name.Contains("FreeRoaming"))
         {
-            StartCoroutine(PlayNextMusicTrack());
+            if (Input.GetAxisRaw("RadioChange") != 0 && !isSwitchInUse)
+            {
+                isSwitchInUse = true;
+                MusicChange((int)Input.GetAxisRaw("RadioChange"));
+                StartCoroutine(PlayNextMusicTrack());
+            }
+            else if (Input.GetAxisRaw("RadioChange") == 0)
+            {
+                isSwitchInUse = false;
+            }
+
+            if (!musicSource.isPlaying)
+            {
+                MusicChange(0);
+                StartCoroutine(PlayNextMusicTrack());
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Insert))
@@ -170,7 +193,7 @@ public class AudioManager : MonoBehaviour
             vehicleResistenceAir
         };
 
-        accessoriesSoundSettings = new SoundSettingsSemplified[15]
+        accessoriesSoundSettings = new SoundSettingsSemplified[18]
         {
             gliderON,
             gliderOFF,
@@ -186,7 +209,10 @@ public class AudioManager : MonoBehaviour
             shieldingON,
             shieldingOFF,
             airBearing,
-            helicopterON
+            helicopterON,
+            aeolianPropeller,
+            solarPropeller,
+            radiationPropeller
         };
 
         influenceZonesSoundSettings = new SoundSettingsSemplified[3]
@@ -329,13 +355,12 @@ public class AudioManager : MonoBehaviour
                 yield return null;
             }
 
-            musicSource.Stop();
             StopCoroutine(PlayNextMusicTrack());
+            musicSource.Stop();
             StartCoroutine(PlayNextMusicTrack());
         }
         else
         {
-            int musicIndex = UnityEngine.Random.Range(0, musicArray.Length);
             musicSource.clip = musicArray[musicIndex].audioFile;
             musicSource.volume = 0;
             musicSource.pitch = musicArray[musicIndex].pitch;
@@ -355,6 +380,25 @@ public class AudioManager : MonoBehaviour
         yield return null;
     }
 
+    void MusicChange (int input)
+    {
+        if (input == 0)
+        {
+            musicIndex = UnityEngine.Random.Range(0, musicArray.Length);
+        }
+        else if (input == 1)
+        {
+            musicIndex = (musicIndex+1) % musicArray.Length;
+        }
+        else if (input == -1)
+        {
+            if (musicIndex > 0) musicIndex = musicIndex-1;
+            else musicIndex = musicArray.Length - 1;
+        }
+
+        StartCoroutine(ShowRadioName());
+    }
+
     public void PlayPauseMenuChange(bool isOpened)
     {
         if (isOpened)
@@ -368,9 +412,48 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    void PlayMenuMusic()
+    {
+        musicSource.clip = menuMusic.audioFile;
+        musicSource.volume = menuMusic.volume;
+        musicSource.pitch = menuMusic.pitch;
+        musicSource.spatialBlend = 0;
+        musicSource.loop = true;
+        musicSource.Play();
+    }
+
+    
     void OnLevelWasLoaded(int level)
     {
         StopAllSounds();
-        StartCoroutine(PlayNextMusicTrack());
+
+        if (!SceneManager.GetActiveScene().name.Contains("Mission") && !SceneManager.GetActiveScene().name.Contains("FreeRoaming"))
+        {
+            if (musicSource != null)
+            {
+                musicSource.Stop();
+                PlayMenuMusic();
+            }
+        }
+        else
+        {
+            musicText = GameObject.Find("MusicText").GetComponent<Text>();
+
+            if (musicSource.clip == menuMusic.audioFile)
+            {
+                musicSource.Stop();
+            }
+        }
+    }
+
+    public IEnumerator ShowRadioName()
+    {
+        musicText.DOFade(1, 1);
+        string[] musicName = musicArray[musicIndex].audioFile.ToString().Split('(');
+        musicText.text = musicName[0];
+
+        yield return new WaitForSeconds(3.0f);
+
+        musicText.DOFade(0, 1);
     }
 }

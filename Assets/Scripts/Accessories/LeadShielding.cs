@@ -27,6 +27,8 @@ public class LeadShielding : Accessory
             {
                 isActive = false;
 
+                NewVehicleController.vehicleController.isShielded = false;
+
                 StopCoroutine(mLeadShieldingOn);
                 StartCoroutine(mCooldown = Cooldown());
             }
@@ -37,18 +39,11 @@ public class LeadShielding : Accessory
                 accessoryPressed = false;
                 PlaySound();
 
+                NewVehicleController.vehicleController.isShielded = true;
+
                 StartCoroutine(mLeadShieldingOn = LeadShieldingOn());
                 StartCoroutine(HUD.instance.SlotBarDecrease(slot, duration));
             }
-        }
-
-        if (isActive)
-        {
-            NewVehicleController.vehicleController.isShielded = true;
-        }
-        else
-        {
-            NewVehicleController.vehicleController.isShielded = false;
         }
     }
 
@@ -65,6 +60,8 @@ public class LeadShielding : Accessory
         }
         isActive = false;
         PlaySound();
+
+        NewVehicleController.vehicleController.isShielded = false;
 
         StartCoroutine(mCooldown = Cooldown());
     }

@@ -14,12 +14,15 @@ public class StartScreenScript : MonoBehaviour
     Color defaultColor;
     int selectedButton = 0;
     bool needToRelease = false;
+    public GameObject credits = null;
+    public GameObject logo = null;
 
 
     void Start()
     {
         defaultColor = textButtons[0].color;
         ChangeTextsColor();
+        Cursor.visible = false;
     }
     
     void Update()
@@ -61,7 +64,7 @@ public class StartScreenScript : MonoBehaviour
                     loadingScreenCamera.SetActive(true);
                     StartCoroutine(SceneLoader.LoadSceneAsync("MenuSelezione")); break;
 
-               case 1: Debug.Log("NO CREDITS :'-("); break;
+               //case 1: //Debug.Log("NO CREDITS :'-("); break;
 
                case 2:
                 #if UNITY_EDITOR
@@ -79,6 +82,17 @@ public class StartScreenScript : MonoBehaviour
         for (int i = 0; i < textButtons.Length; i++)
         {
             textButtons[i].color = (i == selectedButton) ? highlightColor : defaultColor;
+        }
+
+        if (selectedButton == 1)
+        {
+            logo.SetActive(false);
+            credits.SetActive(true);
+        }
+        else
+        {
+            logo.SetActive(true);
+            credits.SetActive(false);
         }
     }
 }

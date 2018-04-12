@@ -31,6 +31,7 @@ public class MissionSelection : MonoBehaviour
 
     private Image _MapImage = null;
     private Image _RecordMedalBox = null;
+    private Image _RecapImage = null;
 
     private Sprite[] _MedalsSprites = new Sprite[3];
 
@@ -39,7 +40,8 @@ public class MissionSelection : MonoBehaviour
     private Sprite[] _PolonordMaps = new Sprite[7];
     private Sprite[] _CrateriMaps = new Sprite[7];
 
-
+    private Image _MissionCollectableImage = null;
+    private Color _MissionCollectableColor;
 
     private static Tweener _LockShake;
     private static GameObject _LockImg;
@@ -88,6 +90,7 @@ public class MissionSelection : MonoBehaviour
 
         _RecordMedalBox = GameObject.Find("Zone").transform.Find("PlayerRecordBox").Find("MedalSpace").GetComponent<Image>();
         _MapImage = transform.Find("MapImage").GetComponent<Image>();
+        _RecapImage = transform.parent.Find("Recap&Go").Find("RecapMapImage").GetComponent<Image>();
 
         _MedalsSprites[0] = Resources.Load<Sprite>("Sprites/MedalGold");
         _MedalsSprites[1] = Resources.Load<Sprite>("Sprites/MedalSilver");
@@ -101,6 +104,9 @@ public class MissionSelection : MonoBehaviour
 
         _RecordTxt = GameObject.Find("Zone").transform.Find("PlayerRecordBox").transform.Find("RecordTime").GetComponent<Text>();
         _CollectableCountTxt = GameObject.Find("CollectableValue").GetComponent<Text>();
+
+        _MissionCollectableImage = transform.Find("MissionCollectableBox").Find("CollectableBackground").GetComponent<Image>();
+        _MissionCollectableColor = transform.Find("MissionCollectableBox").Find("CollectableBackground").GetComponent<Image>().color;
 
         m_Zone.GetChild(0).GetChild(zoneIndex).gameObject.SetActive(true);
         m_Zone.GetChild(1).GetChild(zoneIndex).gameObject.SetActive(false);
@@ -147,6 +153,7 @@ public class MissionSelection : MonoBehaviour
         changeImage += ChangeTextsCount;
         changeImage += ChangeMapImage;
 
+        _RecapImage.sprite = _MapImage.sprite;
         ChangeTextsCount();
 
         _MissionDescription.text = TextContainer.MAPS_DESCRIPTION[zoneIndex];
@@ -159,7 +166,7 @@ public class MissionSelection : MonoBehaviour
         {
             if (!MenuManager.pauseMenuActive)
             {
-                if (Input.GetAxis(InputContainer.HORIZONTAL) < 0)
+                if (Input.GetAxis(InputContainer.HORIZONTAL) < 0 || Input.GetAxis(InputContainer.RADIO_CHANGE) < 0)
                 {
                     if (zoneIndex > 0 && isFirstImage)
                     {
@@ -194,7 +201,7 @@ public class MissionSelection : MonoBehaviour
 
                 }
 
-                if (Input.GetAxis(InputContainer.HORIZONTAL) > 0)
+                if (Input.GetAxis(InputContainer.HORIZONTAL) > 0 || Input.GetAxis(InputContainer.RADIO_CHANGE) > 0)
                 {
                     if (isFirstImage && zoneIndex < m_Zone.GetChild(0).childCount - 1)
                     {
@@ -274,7 +281,7 @@ public class MissionSelection : MonoBehaviour
         #endregion
 
        #region ResetAxis
-        if (Input.GetAxis(InputContainer.VERTICAL) == 0 && Input.GetAxis(InputContainer.HORIZONTAL) == 0)
+        if (Input.GetAxis(InputContainer.VERTICAL) == 0 && Input.GetAxis(InputContainer.HORIZONTAL) == 0 && Input.GetAxis(InputContainer.RADIO_CHANGE) == 0)
         {
             m_StopInput = false;
         }
@@ -409,6 +416,15 @@ public class MissionSelection : MonoBehaviour
         _MedalTimersTxts[1].text = _Silver;
         _MedalTimersTxts[2].text = _Bronze;
 
+        if(_Record[2] == " No " && _MissionCollectableImage.color != _MissionCollectableColor)
+        {
+            _MissionCollectableImage.color = _MissionCollectableColor;
+        }
+        else if(_Record[2] != " No " && _MissionCollectableImage.color != Color.white)
+        {
+            _MissionCollectableImage.color = Color.white;
+        }
+
         if (_Record[0] != "00 : 00 : 00 ")
         {
             _SecondImageObj[2].SetActive(true);
@@ -507,15 +523,19 @@ public class MissionSelection : MonoBehaviour
         {
             case 0:
                 _MapImage.sprite = _VallesMarinerisMaps[missioniIndex];
+                _RecapImage.sprite = _MapImage.sprite;
                 break;
             case 1:
                 _MapImage.sprite = _MonsOlympusMaps[missioniIndex];
+                _RecapImage.sprite = _MapImage.sprite;
                 break;
             case 2:
                 _MapImage.sprite = _PolonordMaps[missioniIndex];
+                _RecapImage.sprite = _MapImage.sprite;
                 break;
             case 3:
                 _MapImage.sprite = _CrateriMaps[missioniIndex];
+                _RecapImage.sprite = _MapImage.sprite;
                 break;
         }
     }

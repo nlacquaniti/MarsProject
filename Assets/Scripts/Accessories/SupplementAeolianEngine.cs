@@ -10,13 +10,13 @@ public class SupplementAeolianEngine : Accessory
 
     IEnumerator mCooldown;
     IEnumerator mSupplAeolianOn;
-    //IEnumerator mTurnSupplAeolianOn;
-
     Animator m_Animator;
+    AudioSource audioSource = null;
 
 
     void Start ()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
         m_Animator = GetComponentInChildren<Animator>();
         fileManager = new FileManager();
         type = TypeOfAccessories.Aeolian_Propeller;
@@ -55,8 +55,10 @@ public class SupplementAeolianEngine : Accessory
     IEnumerator SupplAeolianOn()
     {
 		isActive = true;
-		float timer = duration;
-        
+        PlaySound();
+
+        float timer = duration;
+
         while (timer > 0)
         {
             foreach (EnvPropertyScript zone in vehicleController.currentInfluenceZones)
@@ -79,28 +81,15 @@ public class SupplementAeolianEngine : Accessory
         StartCoroutine(mCooldown = Cooldown());
     }
 
-    /*IEnumerator TurnSupplAeolianOn()
+    void PlaySound()
     {
-        print(isActive);
-        isActive = true;
-        print(isActive);
-        StartCoroutine(mSupplAeolianOn = SupplAeolianOn());
-        while (duration > 0)
-        {
+        int index = isActive ? 15 : 15;
 
-            foreach (EnvPropertyScript zone in vehicleController.currentInfluenceZones)
-            {
-                string influenceTag = zone.gameObject.tag;
-
-                if (influenceTag == "EnvPropertyWind")
-                {
-                    vehicleController.currentFuelConsumption /= ((supplementValue * zone.value) / 1);
-                    break;
-                }
-            }
-            yield return null;
-
-        }
-        
-    }*/
+        audioSource.clip = AudioManager.Audio.GetAccessoriesSoundSettings()[index].audioFile;
+        audioSource.volume = AudioManager.Audio.GetAccessoriesSoundSettings()[index].volume;
+        audioSource.pitch = AudioManager.Audio.GetAccessoriesSoundSettings()[index].pitch;
+        audioSource.maxDistance = AudioManager.Audio.GetAccessoriesSoundSettings()[index].distance;
+        audioSource.loop = false;
+        audioSource.Play();
+    }
 }

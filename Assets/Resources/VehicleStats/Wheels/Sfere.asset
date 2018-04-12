@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   acceleration: 0
-  fuelConsumption: 0.1
-  adherence1: 0.6
+  fuelConsumption: 0
+  adherence1: 0.5
   adherence2: 0.2
-  adherence3: 0.6
+  adherence3: 0.5
   weight: 0.1

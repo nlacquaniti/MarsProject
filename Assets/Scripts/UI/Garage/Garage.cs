@@ -60,6 +60,8 @@ public class Garage : MonoBehaviour
     public Transform[] slot3Tr;
     public Transform[] slot4Tr;
 
+    private Text _ComponentText = null;
+
 
     #region Private Components
     private Transform m_WarningIcon;
@@ -138,6 +140,9 @@ public class Garage : MonoBehaviour
         m_WarningIcon = GameObject.Find("WarningIcon").GetComponent<Transform>();
         m_WarningIcon.gameObject.SetActive(false);
 
+        _ComponentText = GameObject.Find("ComponentText").GetComponent<Text>();
+
+        _ComponentText.text = TextContainer.CARS_DESCRIPTIONS[loomIndex];
         StartManagment();
     }
 
@@ -151,7 +156,7 @@ public class Garage : MonoBehaviour
         {
             if (!MenuManager.pauseMenuActive)
             {
-                if (m_VerticalIndex < verticalList.Length - 1)
+                if (m_VerticalIndex < verticalList.Length - 3)
                 {
                     if ((Input.GetAxis(InputContainer.VERTICAL) < 0 || Input.GetKeyDown(KeyCode.DownArrow)))
                     {
@@ -160,6 +165,42 @@ public class Garage : MonoBehaviour
 
                         ResetWarning();
                         StatsBar.instance.RefreshBars();
+
+                        switch (m_VerticalIndex)
+                        {
+                            case 0:
+                                _ComponentText.text = TextContainer.CARS_DESCRIPTIONS[loomIndex];
+                                break;
+                            case 1:
+                                _ComponentText.text = TextContainer.ENGINES_DESCRIPTIONS[engineIndex];
+                                break;
+                            case 2:
+                                _ComponentText.text = TextContainer.WHEELS_DESCRIPTIONS[wheelIndex];
+                                break;
+                            case 3:
+                                _ComponentText.text = "";
+                                break;
+                            case 4:
+                                if (slot1Index == 0)
+                                {
+                                    _ComponentText.text = "";
+                                }
+                                else
+                                {
+                                    _ComponentText.text = TextContainer.ACCESSORY1_DESCRIPTIONS[slot1Index -1 ];
+                                }
+                                break;
+                            case 5:
+                                if(slot2Index == 0)
+                                {
+                                    _ComponentText.text = "";
+                                }
+                                else
+                                {
+                                    _ComponentText.text = TextContainer.ACCESSORY2_DESCRIPTIONS[slot2Index -1 ];
+                                }
+                                break;
+                        }
 
                         if (AudioManager.Audio != null)
                         {
@@ -174,9 +215,44 @@ public class Garage : MonoBehaviour
                     {
                         _WarningTrigger = true;
                         ChangeVerticalIndex(true);
-
                         ResetWarning();
                         StatsBar.instance.RefreshBars();
+
+                        switch (m_VerticalIndex)
+                        {
+                            case 0:
+                                _ComponentText.text = TextContainer.CARS_DESCRIPTIONS[loomIndex];
+                                break;
+                            case 1:
+                                _ComponentText.text = TextContainer.ENGINES_DESCRIPTIONS[engineIndex];
+                                break;
+                            case 2:
+                                _ComponentText.text = TextContainer.WHEELS_DESCRIPTIONS[wheelIndex];
+                                break;
+                            case 3:
+                                _ComponentText.text = "";
+                                break;
+                            case 4:
+                                if (slot1Index == 0)
+                                {
+                                    _ComponentText.text = "";
+                                }
+                                else
+                                {
+                                    _ComponentText.text = TextContainer.ACCESSORY1_DESCRIPTIONS[slot1Index -1];
+                                }
+                                break;
+                            case 5:
+                                if (slot2Index == 0)
+                                {
+                                    _ComponentText.text = "";
+                                }
+                                else
+                                {
+                                    _ComponentText.text = TextContainer.ACCESSORY2_DESCRIPTIONS[slot2Index -1];
+                                }
+                                break;
+                        }
 
                         if (AudioManager.Audio != null)
                         {
@@ -185,7 +261,7 @@ public class Garage : MonoBehaviour
                     }
                 }
 
-                if ((Input.GetAxis(InputContainer.HORIZONTAL) > 0 || Input.GetKeyDown(KeyCode.RightArrow)))
+                if ((Input.GetAxis(InputContainer.HORIZONTAL) > 0 || Input.GetKeyDown(KeyCode.RightArrow) || Input.GetAxis(InputContainer.RADIO_CHANGE) > 0))
                 {
                     _WarningTrigger = true;
                     RightSwitch();
@@ -197,7 +273,7 @@ public class Garage : MonoBehaviour
                     }
                 }
 
-                if (Input.GetAxis(InputContainer.HORIZONTAL) < 0 || Input.GetKeyDown(KeyCode.LeftArrow))
+                if (Input.GetAxis(InputContainer.HORIZONTAL) < 0 || Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetAxis(InputContainer.RADIO_CHANGE) < 0)
                 {
                     _WarningTrigger = true;
                     LeftSwitch();
@@ -214,7 +290,7 @@ public class Garage : MonoBehaviour
         #endregion
 
         #region ResetAxis
-        if (Input.GetAxis(InputContainer.VERTICAL) == 0 && Input.GetAxis(InputContainer.HORIZONTAL) == 0)
+        if (Input.GetAxis(InputContainer.VERTICAL) == 0 && Input.GetAxis(InputContainer.HORIZONTAL) == 0 && Input.GetAxis(InputContainer.RADIO_CHANGE) == 0)
         {
             m_StopInput = false;
         }
@@ -343,7 +419,8 @@ public class Garage : MonoBehaviour
                     ResetAccessories(loomIndex);
                     ResetSkins();
                     ActivationManagment(ref loomIndex, true);
-                    
+
+                    _ComponentText.text = TextContainer.CARS_DESCRIPTIONS[loomIndex];
                     LoomRebaseAccessory();
                     ChangeLoom();
                 }
@@ -353,6 +430,7 @@ public class Garage : MonoBehaviour
                 if (engineIndex < m_MaxEngine)
                 {
                     ActivationManagment(ref engineIndex, true);
+                    _ComponentText.text = TextContainer.ENGINES_DESCRIPTIONS[engineIndex];
                     ChangeEngine();
                 }
                 break;
@@ -361,6 +439,7 @@ public class Garage : MonoBehaviour
                 if (wheelIndex < m_MaxWheel)
                 {
                     ActivationManagment(ref wheelIndex, true);
+                    _ComponentText.text = TextContainer.WHEELS_DESCRIPTIONS[wheelIndex];
                     ChangeWheels();
                 }
                 break;
@@ -377,6 +456,16 @@ public class Garage : MonoBehaviour
                 if (slot1Index < m_MaxSlot1 && isSlot1Avabile)
                 {
                     ActivationManagment(ref slot1Index, true);
+
+                    if (slot1Index == 0)
+                    {
+                        _ComponentText.text = "";
+
+                    }
+                    else
+                    {
+                        _ComponentText.text = TextContainer.ACCESSORY1_DESCRIPTIONS[slot1Index - 1];
+                    }
                     ChangeAccessory(slot1Tr, slot1Index);
                     ResetWarning();
                     
@@ -410,6 +499,14 @@ public class Garage : MonoBehaviour
                 if (slot2Index < m_MaxSlot2 && isSlot2Avabile)
                 {
                     ActivationManagment(ref slot2Index, true);
+                    if(slot2Index == 0)
+                    {
+                        _ComponentText.text = "";
+                    }
+                    else
+                    {
+                        _ComponentText.text = TextContainer.ACCESSORY2_DESCRIPTIONS[slot2Index-1];
+                    }
                     ChangeAccessory(slot2Tr, slot2Index);
                     ResetWarning();
                     if (slot2Index == slot1Index && slot2Index != 0 && slot2Index < 8)
@@ -519,6 +616,7 @@ public class Garage : MonoBehaviour
                     ResetAccessories(loomIndex);
                     ResetSkins();
                     ActivationManagment(ref loomIndex, false);
+                    _ComponentText.text = TextContainer.CARS_DESCRIPTIONS[loomIndex];
                     LoomRebaseAccessory();
                     ChangeLoom();
                 }
@@ -529,6 +627,7 @@ public class Garage : MonoBehaviour
                 if (engineIndex > 0)
                 {
                     ActivationManagment(ref engineIndex, false);
+                    _ComponentText.text = TextContainer.ENGINES_DESCRIPTIONS[engineIndex];
                     ChangeEngine();
                 }
                 break;
@@ -538,6 +637,7 @@ public class Garage : MonoBehaviour
                 if (wheelIndex > 0)
                 {
                     ActivationManagment(ref wheelIndex, false);
+                    _ComponentText.text = TextContainer.WHEELS_DESCRIPTIONS[wheelIndex];
                     ChangeWheels();
                 }
                 break;
@@ -555,6 +655,15 @@ public class Garage : MonoBehaviour
                 if (slot1Index > 0 && isSlot1Avabile)
                 {
                     ActivationManagment(ref slot1Index, false);
+                    if (slot1Index == 0)
+                    {
+                        _ComponentText.text = "";
+
+                    }
+                    else
+                    {
+                        _ComponentText.text = TextContainer.ACCESSORY1_DESCRIPTIONS[slot1Index - 1];
+                    }
                     ChangeAccessory(slot1Tr, slot1Index);
                     ResetWarning();
                     if (slot1Index == slot2Index && slot1Index != 0 && slot1Index < 8)
@@ -587,6 +696,15 @@ public class Garage : MonoBehaviour
                 if (slot2Index > 0 && isSlot2Avabile)
                 {
                     ActivationManagment(ref slot2Index, false);
+                    if (slot2Index == 0)
+                    {
+                        _ComponentText.text = "";
+
+                    }
+                    else
+                    {
+                        _ComponentText.text = TextContainer.ACCESSORY2_DESCRIPTIONS[slot2Index - 1];
+                    }
                     ChangeAccessory(slot2Tr, slot2Index);
                     ResetWarning();
                     if (slot2Index == slot1Index && slot2Index != 0 && slot2Index < 8)
@@ -1320,10 +1438,44 @@ public class Garage : MonoBehaviour
             {
                 WarningReset(verticalList[7], ref _Slot4Index);
             }
-
-
+							
         }
 
+		TricicloLoom.m_Priority = 10;
+		TricicloLoom.m_Priority = 10;
+		TricicloEngine.m_Priority = 10;
+		TricicloWheels.m_Priority = 10;
+		TricicloSkin.m_Priority = 10;
+		TricicloAcc1.m_Priority = 10;
+		TricicloAcc2.m_Priority = 10;
+
+		ClassicaLoom.m_Priority = 10;
+		ClassicaEngine.m_Priority = 10;
+		ClassicaWheels.m_Priority = 10;
+		ClassicaSkin.m_Priority = 10;
+		ClassicaAcc1.m_Priority = 10;
+		ClassicaAcc2.m_Priority = 10;
+
+		PickUpLoom.m_Priority = 10;
+		PickUpEngine.m_Priority = 10;
+		PickUpWheels.m_Priority = 10;
+		PickUpSkin.m_Priority = 10;
+		PickUpAcc1.m_Priority = 10;
+		PickUpAcc2.m_Priority = 10;
+
+		if (loomIndex == 0) 
+		{
+			TricicloLoom.m_Priority = 11;
+		} 
+		else if (loomIndex == 1) 
+		{
+			ClassicaLoom.m_Priority = 11;
+		}
+		else if (loomIndex == 2) 
+		{
+			PickUpLoom.m_Priority = 11;
+		}	
 
     }
+
 }

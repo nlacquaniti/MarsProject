@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: Nucleare
   m_EditorClassIdentifier: 
   speed: 0.3
-  acceleration: 0.2
-  fuelConsumption: 0.25
+  acceleration: 0.3
+  fuelConsumption: -0.25
   adherence1: 0
   adherence2: 0
   adherence3: 0

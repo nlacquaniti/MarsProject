@@ -123,7 +123,7 @@ Material:
     - _BendNormalsStrength: 0.05
     - _BumpScale: 1
     - _BumpScale2: 1
-    - _ColorMultiplier: 100
+    - _ColorMultiplier: 114.6
     - _CurvatureCustomU: 0
     - _CurvatureCustomV: 0
     - _CurvatureMultU: 1

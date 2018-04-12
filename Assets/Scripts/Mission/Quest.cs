@@ -94,7 +94,7 @@ public abstract class Quest : MonoBehaviour
             HUD.instance.ShowQuestResult(false);
             AudioManager.Audio.PlayObjectivesSound(ObjectiveSounds.MissionFailed);
             //SetResult(false);
-            StartCoroutine(MissionData());
+            //StartCoroutine(MissionData());
         }
 
     }

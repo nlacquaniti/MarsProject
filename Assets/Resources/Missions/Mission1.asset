@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Name: Mission1
   m_EditorClassIdentifier: 
   _Gold:
-  - 250
-  - 200
-  - 240
+  - 150
+  - 90
+  - 180
   - 150
   _Silver:
-  - 400
-  - 240
-  - 360
+  - 210
+  - 120
+  - 210
   - 225
   _Bronze:
-  - 600
   - 300
-  - 900
+  - 180
+  - 300
   - 330
   _SelectedQuest: 01000000010000000100000001000000
   _Created: 01010101

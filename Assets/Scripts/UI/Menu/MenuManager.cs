@@ -109,7 +109,7 @@ public class MenuManager : MonoBehaviour
                     StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_PauseButtons[0].transform, true));
                 }
 
-                if (Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 && _PauseI < _PauseButtons.Length - 1)
+                if ((Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 || Input.GetAxisRaw(InputContainer.RADIO_CHANGE) > 0 )&& _PauseI < _PauseButtons.Length - 1)
                 {
                     _PauseButtons[_PauseI].sprite = _LightBlue;
                     
@@ -122,7 +122,7 @@ public class MenuManager : MonoBehaviour
                     
 
                 }
-                else if (Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 && _PauseI > 0)
+                else if ((Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 || Input.GetAxisRaw(InputContainer.RADIO_CHANGE) < 0) && _PauseI > 0)
                 {
                     _PauseButtons[_PauseI].sprite = _LightBlue;
                     
@@ -139,7 +139,8 @@ public class MenuManager : MonoBehaviour
                 {
                     if (_PauseI == 0)
                     {
-                        Application.Quit();
+                        StartCoroutine(SetMenuTriggerTrue());
+                        StartCoroutine(SceneLoader.LoadSceneAsync("MenuIniziale"));
                     }
                     else
                     {
@@ -162,7 +163,7 @@ public class MenuManager : MonoBehaviour
             }
         }
 
-        if(Input.GetAxis(InputContainer.ACCESSORY2) == 0 && Input.GetAxis(InputContainer.ACCESSORYRIGHT) == 0)
+        if(Input.GetAxis(InputContainer.ACCESSORY2) == 0 && Input.GetAxis(InputContainer.ACCESSORYRIGHT) == 0 && Input.GetAxis(InputContainer.RADIO_CHANGE) == 0)
         {
             m_Trigger = true;
         }

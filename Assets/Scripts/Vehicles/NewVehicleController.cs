@@ -207,6 +207,7 @@ public class NewVehicleController : MonoBehaviour
         }
 
         ambientTemperature = int.MaxValue;
+
         fpsCounter = gameObject.AddComponent<FPSCounter>();
     }
 
@@ -222,9 +223,11 @@ public class NewVehicleController : MonoBehaviour
                 wheel.trailRenderer = skidMarkObject.AddComponent<TrailRenderer>();
                 wheel.trailRenderer.material = skidmarkMaterials[0];
                 wheel.trailRenderer.startWidth = 0.25f;
-                wheel.trailRenderer.endWidth = 0f;
+                wheel.trailRenderer.endWidth = 0.25f;
                 wheel.trailRenderer.time = 2;
                 wheel.trailRenderer.minVertexDistance = 0.1f;
+                wheel.trailRenderer.motionVectorGenerationMode = MotionVectorGenerationMode.ForceNoMotion;
+                wheel.trailRenderer.textureMode = LineTextureMode.RepeatPerSegment;
                 wheel.trailRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 SkidmarkScript skidmarkScript = skidMarkObject.AddComponent<SkidmarkScript>();
                 skidmarkScript.trailRenderer = wheel.trailRenderer;
@@ -428,7 +431,7 @@ public class NewVehicleController : MonoBehaviour
 
         if (debugText != null)
         {
-            debugText.text = "FPS: " + fpsCounter.GetFPS() + " ";
+            debugText.text = ""; //"FPS: " + fpsCounter.GetFPS() + " ";
         }
         else
         {
@@ -750,62 +753,35 @@ public class NewVehicleController : MonoBehaviour
 
     void Steering(WheelInfo wheelInfo)
     {
-        if (chosenWheel != TypeOfWheel.Caterpillar)
-        {
-            float steering = (steeringAngle - (currentSpeed / 8)) * Input.GetAxis(horizontalInput);
+        float steering = (steeringAngle - (currentSpeed / 8)) * Input.GetAxis(horizontalInput);
 
-            if (chosenWheel == TypeOfWheel.Sphere)
+        if (chosenWheel == TypeOfWheel.Sphere || chosenWheel == TypeOfWheel.Drone || chosenWheel == TypeOfWheel.Propeller)
+        {
+            if (Input.GetAxis(sphereR) > 0)
             {
-                if (!Input.GetButton(sphereL) && !Input.GetButton(sphereR))
-                {
-                    if (Input.GetAxis(verticalInput) >= 0.9f && Input.GetAxis(horizontalInput) >= 0.9f)
-                    {
-                        steering = 45;
-                    }
-                    else if (Input.GetAxis(verticalInput) == 0 && Input.GetAxis(horizontalInput) >= 0.9f)
-                    {
-                        steering = 90;
-                    }
-                    else if (Input.GetAxis(verticalInput) <= -0.9f && Input.GetAxis(horizontalInput) >= 0.9f)
-                    {
-                        steering = 135;
-                    }
-                    else if (Input.GetAxis(verticalInput) <= -0.9f && Input.GetAxis(horizontalInput) <= -0.9f)
-                    {
-                        steering = -135;
-                    }
-                    else if (Input.GetAxis(verticalInput) == 0 && Input.GetAxis(horizontalInput) <= -0.9f)
-                    {
-                        steering = -90;
-                    }
-                    else if (Input.GetAxis(verticalInput) >= 0.9f && Input.GetAxis(horizontalInput) <= -0.9f)
-                    {
-                        steering = -45;
-                    }
-                }
-                else
-                {
-                    if (wheelInfo.steering)
-                    {
-                        if (Input.GetAxis(sphereL) > 0)
-                        {
-                            steering = -steeringAngle;
-                        }
-                        else if (Input.GetAxis(sphereR) > 0)
-                        {
-                            steering = steeringAngle;
-                        }
-                    }
-                }
+                steering = 90;
+            }
+            else if (Input.GetAxis(sphereL) > 0)
+            {
+                steering = -90;
+            }
+        }
+
+        if (Mathf.Abs(steering) == 90)
+        {
+            wheelInfo.wheelCollider.steerAngle = steering;
+        }
+        else
+        {
+            if (wheelInfo.steering)
+            {
                 wheelInfo.wheelCollider.steerAngle = steering;
             }
             else
             {
-                if (wheelInfo.steering)
-                {
-                    wheelInfo.wheelCollider.steerAngle = steering;
-                }
+                wheelInfo.wheelCollider.steerAngle = 0;
             }
+
         }
     }
 
@@ -1011,6 +987,28 @@ public class NewVehicleController : MonoBehaviour
                 if (wheelInfo.trailRenderer != null)
                 {
                     wheelInfo.trailRenderer.material = (terrainIndex >= 0 && terrainIndex <= 2) ? skidmarkMaterials[terrainIndex] : skidmarkMaterials[0];
+                    //Color skidmarkColor = (terrainIndex >= 0 && terrainIndex <= 2) ? skidMarkColors[terrainIndex] : skidMarkColors[0];
+                    //skidmarkColor.a = 0.1f; //- (Mathf.Abs(currentSpeed) / maxSpeed);
+                    //Color skidmarkColor = wheelInfo.trailRenderer.sharedMaterial.GetColor("_TintColor");
+                    //skidmarkColor.a = 0.75f - (Mathf.Abs(currentSpeed) / maxSpeed);
+                    //wheelInfo.trailRenderer.sharedMaterial.SetColor("_TintColor", skidmarkColor);
+
+                    //wheelInfo.trailRenderer.minVertexDistance = 0.1f / (Mathf.Abs(currentSpeed)*100);
+                    //wheelInfo.trailRenderer.time = 2 - (Mathf.Abs(currentSpeed) / maxSpeed) * 4f;
+
+                    //Debug.Log(2 - (Mathf.Abs(currentSpeed) / maxSpeed) * 6f);
+
+                    if (currentSpeed > 50)
+                    {
+                        if (0.25f - (Mathf.Abs(currentSpeed) / maxSpeed) >= 0.1f)
+                        {
+                            wheelInfo.trailRenderer.startWidth = 0.25f - (Mathf.Abs(currentSpeed) / maxSpeed);
+                        }
+                        else
+                        {
+                            wheelInfo.trailRenderer.startWidth = 0.1f;
+                        }
+                    }
                 }
                                 
                 wheelIndexCount = wheelIndexCount == wheelInfos.Count ? 0 : wheelIndexCount += 1;
@@ -1106,22 +1104,22 @@ public class NewVehicleController : MonoBehaviour
         {
             float axes1 = 0, axes2 = 0, axes3 = 0;
 
-            if (!flyModeAlternative)
-            {
+            //if (!flyModeAlternative)
+            //{
                 axes1 = Input.GetAxis(verticalInput) * (airSensibility.y / 5); //beccheggio Y
                 axes2 = Input.GetAxis(horizontalInput) * (airSensibility.x / 5); //imbardata Z
                 axes3 += Input.GetAxis(bumperL); //rollio X
                 axes3 -= Input.GetAxis(bumperR);
                 axes3 *= (airSensibility.z / 5);
-            }
-            else
-            {
-                axes1 = Input.GetAxis(verticalInput) * (airSensibility.y / 5); //beccheggio Y
-                axes3 = Input.GetAxis(horizontalInput) * (airSensibility.x / 5); //rollio X
-                axes2 += Input.GetAxis(bumperR); //imbardata Z
-                axes2 -= Input.GetAxis(bumperL);
-                axes2 *= (airSensibility.z / 5);
-            }
+            //}
+            //else
+            //{
+            //    axes1 = Input.GetAxis(verticalInput) * (airSensibility.y / 5); //beccheggio Y
+            //    axes3 = Input.GetAxis(horizontalInput) * (airSensibility.x / 5); //rollio X
+            //    axes2 += Input.GetAxis(bumperR); //imbardata Z
+            //    axes2 -= Input.GetAxis(bumperL);
+            //    axes2 *= (airSensibility.z / 5);
+            //}
 
             rb.AddRelativeTorque(axes1, axes2, axes3, ForceMode.VelocityChange);
         }

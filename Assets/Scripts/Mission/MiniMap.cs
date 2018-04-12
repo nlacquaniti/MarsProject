@@ -15,6 +15,8 @@ public class MiniMap : MonoBehaviour
     private Transform _Hud;
     private int i = 0;
 
+    //private RuntimeAnimatorController _FinalTargetAnimator = null;
+
 
     private void Start()
     {
@@ -25,8 +27,11 @@ public class MiniMap : MonoBehaviour
         var _TargetsCount = GameObject.FindGameObjectsWithTag("Target").Length;
         var _WindEnv = GameObject.FindGameObjectsWithTag("EnvPropertyWind").Length;
         var _RadEnv = GameObject.FindGameObjectsWithTag("EnvPropertyRadiation").Length;
+        var _Stations = FindObjectsOfType<FuelRecharging>().Length;
 
-        _Icons = new MiniMapIcons[_TargetsCount + _WindEnv * 2 + _RadEnv * 2 + 2];
+        _Icons = new MiniMapIcons[_TargetsCount + _WindEnv * 2 + _RadEnv * 2 + _Stations + 2];
+
+        //_FinalTargetAnimator = Resources.Load<RuntimeAnimatorController>("MinimapIcons/FinalTargetController");
     }
 
 
@@ -36,6 +41,11 @@ public class MiniMap : MonoBehaviour
         if (img != null)
         {
             Image _Img = Instantiate(img);
+
+            //if(_Img.gameObject.name == "FinalTarget(Clone)")
+            //{
+            //    _Img.gameObject.AddComponent<Animator>().runtimeAnimatorController = _FinalTargetAnimator;
+            //}
 
             _Icons[i] = new MiniMapIcons { Icon = _Img, TargetPos = target, IsClamped = isClamped };
 
@@ -81,9 +91,10 @@ public class MiniMap : MonoBehaviour
                 
                 break;
             }
-            yield return null;
+            
 
         }
+        yield return null;
     }
 
     private IEnumerator DrawIcons()

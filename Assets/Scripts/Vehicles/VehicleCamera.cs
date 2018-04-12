@@ -109,6 +109,8 @@ public class VehicleCamera : MonoBehaviour
 
     void LateUpdate()
     {
+        wallBlock();
+
         if (FlyingCheck() /*&& vehicleController.currentFlyMode != VehicleController.FlyMode.GLIDE*/)
         {
             AirCamera();
@@ -151,8 +153,11 @@ public class VehicleCamera : MonoBehaviour
         vehicleForward = (vehicle.transform.forward).normalized;
 
         wantedPosition = vehicle.transform.position;
-        transform.DOMove(wantedPosition, 0.2f);
-        
+        transform.position = wantedPosition;
+
+        generalCamera.m_Lens.FieldOfView = Mathf.Clamp(Mathf.Abs(Mathf.Lerp(generalCamera.m_Lens.FieldOfView, ((NewVehicleController.vehicleController.currentSpeed / 2.5f) + 60), Time.deltaTime)), 60, 120);
+        firstPersonCamera.m_Lens.FieldOfView = Mathf.Clamp(Mathf.Abs(Mathf.Lerp(generalCamera.m_Lens.FieldOfView, ((NewVehicleController.vehicleController.currentSpeed / 2.5f) + 60), Time.deltaTime)), 60, 120);
+
         cameraRepositionTime = (100 - ((vehicleController.currentSpeed * 100) / repositionSpeedReach)) / 100;
 
         if (Input.GetButton(cameraInvert))
@@ -209,8 +214,6 @@ public class VehicleCamera : MonoBehaviour
             setCameraPriority(lowerCamera, 0);
             setCameraPriority(upperCamera, 0);
         }
-
-        wallBlock();
     }
 
     void AirCamera()
@@ -222,10 +225,8 @@ public class VehicleCamera : MonoBehaviour
 
         offsetChecked = false;
 
-        //setCameraPriority(airCamera, 6);
-
-        transform.DOMove(vehicle.transform.position, 0.4f);
-        transform.DOLookAt(vehicle.transform.position, 5f);
+        
+        transform.position = vehicle.transform.position;
         
         transform.DOLocalRotate(new Vector3(0, (Input.GetAxis("HorizontalCamera") * cameraSensibility) * 5, 0), 0.5f, RotateMode.LocalAxisAdd);
     }

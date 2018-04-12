@@ -5,19 +5,18 @@ using UnityEngine;
 
 public class SupplementRadiationEngine : Accessory
 {
-
     float supplementValue = 1;
 
     IEnumerator mCooldown;
-    //IEnumerator mSupplRadOn;
     IEnumerator mTurnSupplRadOn;
-
     Animator m_Animator;
+    AudioSource audioSource = null;
 
 
     void Start ()
     {
         m_Animator = GetComponentInChildren<Animator>();
+        audioSource = gameObject.AddComponent<AudioSource>();
         fileManager = new FileManager();
         type = TypeOfAccessories.Radiation_Propeller;
         base.Start();
@@ -27,9 +26,6 @@ public class SupplementRadiationEngine : Accessory
 
     void FixedUpdate()
     {
-        //Debug.Log("ACCESSORY: " + (int)vehicleController.chosenAccessory1);
-        //print("Accessory: " + (int)vehicleController.chosenAccessory2);
-
         if (!isCooldown)
         {
             if (accessoryPressed && isActive)
@@ -37,7 +33,6 @@ public class SupplementRadiationEngine : Accessory
                 m_Animator.SetBool("IsGenerating", false);
                 isActive = false;
                 StopCoroutine(mTurnSupplRadOn);
-                //StopCoroutine(mSupplRadOn);
 
                 StartCoroutine(mCooldown = Cooldown());
             }
@@ -52,25 +47,14 @@ public class SupplementRadiationEngine : Accessory
         }
     }
 
-    /*IEnumerator SupplRadOn()
-    {
-        float timer = duration;
-        
-        while (timer > 0)
-        {
-            timer -= Time.deltaTime;
-            yield return null;
-        }
-        m_Animator.SetBool("IsGenerating", false);
-        isActive = false;
-        StartCoroutine(mCooldown = Cooldown());
-    }*/
 
     IEnumerator TurnSupplRadOn()
     {
         isActive = true;
-		float timer = duration;
-        //StartCoroutine(mSupplRadOn = SupplRadOn());
+        PlaySound();
+
+        float timer = duration;
+
 		while (timer > 0)
         {
             foreach (EnvPropertyScript zone in vehicleController.currentInfluenceZones)
@@ -90,6 +74,19 @@ public class SupplementRadiationEngine : Accessory
 		m_Animator.SetBool("IsGenerating", false);
 		isActive = false;
 		StartCoroutine(mCooldown = Cooldown());
+    }
+
+
+    void PlaySound()
+    {
+        int index = isActive ? 17 : 17;
+
+        audioSource.clip = AudioManager.Audio.GetAccessoriesSoundSettings()[index].audioFile;
+        audioSource.volume = AudioManager.Audio.GetAccessoriesSoundSettings()[index].volume;
+        audioSource.pitch = AudioManager.Audio.GetAccessoriesSoundSettings()[index].pitch;
+        audioSource.maxDistance = AudioManager.Audio.GetAccessoriesSoundSettings()[index].distance;
+        audioSource.loop = false;
+        audioSource.Play();
     }
 }
 

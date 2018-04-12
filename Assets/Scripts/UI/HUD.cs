@@ -35,7 +35,7 @@ public class HUD : MonoBehaviour
             {
                 _Images[(int)ImagesName.Medal].sprite = _BronzeMedal;
 
-                if(!_GameObjects[(int)GameObjectsName.MedalBox].activeInHierarchy)
+                if (!_GameObjects[(int)GameObjectsName.MedalBox].activeInHierarchy)
                     _GameObjects[(int)GameObjectsName.MedalBox].SetActive(true);
             }
         }
@@ -73,9 +73,9 @@ public class HUD : MonoBehaviour
     private GameObject[] _GameObjects = new GameObject[7];
     private Image[] _Images = new Image[17];
 
-    private enum TextsName {Objective, Timer, MedalTime, RecordTime, Speed, Fuel, Temperature, Accessory1, Accessory2, WindSpeed, QuestResult, TimeResult, NewRecordResult};
-    private enum GameObjectsName {ObjectiveBox, PauseBox, MedalBox, RecordBox, CollectableBox, BoxSlot1, BoxSlot2 };
-    private enum ImagesName {SpeedBar, FuelBar, TemperatureBar, Slot1, Slot2, Resume, Restart, Garage, Confirm, Yes, No, WindDirection, Medal, ResultMedal, RestartResult, GarageResult, EngineValue };
+    private enum TextsName { Objective, Timer, MedalTime, RecordTime, Speed, Fuel, Temperature, Accessory1, Accessory2, WindSpeed, QuestResult, TimeResult, NewRecordResult };
+    private enum GameObjectsName { ObjectiveBox, PauseBox, MedalBox, RecordBox, CollectableBox, BoxSlot1, BoxSlot2 };
+    private enum ImagesName { SpeedBar, FuelBar, TemperatureBar, Slot1, Slot2, Resume, Garage, Confirm, Yes, No, WindDirection, Medal, ResultMedal, GarageResult, EngineValue };
 
     private Sprite _LightBlue;
     private Sprite _DarkBlue;
@@ -93,7 +93,7 @@ public class HUD : MonoBehaviour
     private IEnumerator _LerpCoroutineIncrese;
     private IEnumerator _LerpCoroutineStart;
 
-    
+
     private float _StartingXScale;
     private float _IncreasedXScale;
     [SerializeField] private float _XScaleMultiplier = .3f;
@@ -102,7 +102,7 @@ public class HUD : MonoBehaviour
     private void Start()
     {
         instance = this;
-        
+
         _Canvas = GetComponent<Canvas>();
         _Canvas.worldCamera = Camera.main;
 
@@ -121,7 +121,7 @@ public class HUD : MonoBehaviour
         _Images[(int)ImagesName.Slot1] = transform.Find("BoxDx").GetChild(2).GetChild(0).GetComponent<Image>();
         _Images[(int)ImagesName.Slot2] = transform.Find("BoxDx").GetChild(3).GetChild(0).GetComponent<Image>();
         _Images[(int)ImagesName.Resume] = GetUIComponent<Image>("PauseBox", 0);
-        _Images[(int)ImagesName.Restart] = GetUIComponent<Image>("PauseBox", 1);
+        //_Images[(int)ImagesName.Restart] = GetUIComponent<Image>("PauseBox", 1);
         _Images[(int)ImagesName.Garage] = GetUIComponent<Image>("PauseBox", 2);
         _Images[(int)ImagesName.Confirm] = GetUIComponent<Image>("PauseBox", 3);
         _Images[(int)ImagesName.Yes] = transform.Find("PauseBox").GetChild(3).GetChild(0).GetComponent<Image>();
@@ -129,7 +129,7 @@ public class HUD : MonoBehaviour
         _Images[(int)ImagesName.WindDirection] = GetUIComponent<Image>("BoxSx", 6);
         _Images[(int)ImagesName.Medal] = transform.Find("BoxMedalTime").GetChild(1).GetChild(0).GetComponent<Image>();
         _Images[(int)ImagesName.ResultMedal] = GetUIComponent<Image>("Result", 5);
-        _Images[(int)ImagesName.RestartResult] = GetUIComponent<Image>("Result", 1);
+        //_Images[(int)ImagesName.RestartResult] = GetUIComponent<Image>("Result", 1);
         _Images[(int)ImagesName.GarageResult] = GetUIComponent<Image>("Result", 2);
         _Images[(int)ImagesName.EngineValue] = GetUIComponent<Image>("BoxDx", 9);
 
@@ -148,12 +148,12 @@ public class HUD : MonoBehaviour
         _Texts[(int)TextsName.NewRecordResult] = transform.Find("Result").GetChild(4).GetChild(0).GetComponent<Text>();
 
         _DarkBlue = _Images[(int)ImagesName.Resume].sprite;
-        _LightBlue = _Images[(int)ImagesName.Restart].sprite;
+        _LightBlue = _Images[(int)ImagesName.Garage].sprite;
 
-        _Images[(int)ImagesName.RestartResult].sprite = _DarkBlue;
+        //_Images[(int)ImagesName.RestartResult].sprite = _DarkBlue;
 
-        _StartingXScale = _Images[(int)ImagesName.Restart].transform.localScale.x;
-        _IncreasedXScale = _Images[(int)ImagesName.Restart].transform.localScale.x + _XScaleMultiplier;
+        _StartingXScale = _Images[(int)ImagesName.Garage].transform.localScale.x;
+        _IncreasedXScale = _Images[(int)ImagesName.Garage].transform.localScale.x + _XScaleMultiplier;
 
         _GoldMedal = Resources.Load<Sprite>("Sprites/MedalGold");
         _SilverMedal = Resources.Load<Sprite>("Sprites/MedalSilver");
@@ -171,14 +171,14 @@ public class HUD : MonoBehaviour
     private IEnumerator ScaleMenu(Transform t, bool increase)
     {
 
-        while(true)
+        while (true)
         {
             if (increase)
             {
                 t.localScale = new Vector3(t.localScale.x + 0.1f, t.localScale.y, t.localScale.z);
                 if (t.localScale.x >= _IncreasedXScale)
                 {
-                    
+
                     t.localScale = new Vector3(_IncreasedXScale, t.localScale.y, t.localScale.z);
                     break;
                 }
@@ -188,14 +188,14 @@ public class HUD : MonoBehaviour
                 t.localScale = new Vector3(t.localScale.x - 0.1f, t.localScale.y, t.localScale.z);
                 if (t.localScale.x <= _StartingXScale)
                 {
-                   
+
                     t.localScale = new Vector3(_StartingXScale, t.localScale.y, t.localScale.z);
                     break;
                 }
             }
             yield return null;
         }
-       
+
     }
 
     public IEnumerator ShowObjectiveBox()
@@ -215,7 +215,7 @@ public class HUD : MonoBehaviour
 
     public IEnumerator ShowObjectiveBox(string str)
     {
-        while(_Texts[0] == null)
+        while (_Texts[0] == null)
         {
             print("loading");
             yield return null;
@@ -255,7 +255,7 @@ public class HUD : MonoBehaviour
     {
         var _DecreaseRate = 1 / duration;
 
-        if(slot == 1)
+        if (slot == 1)
         {
             var _Slot1 = _Images[(int)ImagesName.Slot1];
 
@@ -312,7 +312,7 @@ public class HUD : MonoBehaviour
             var _Slot2 = _Images[(int)ImagesName.Slot2];
             _Slot2.fillAmount = 0;
 
-            while(true)
+            while (true)
             {
                 if (_Slot2.fillAmount >= 1)
                     break;
@@ -329,7 +329,7 @@ public class HUD : MonoBehaviour
 
     public IEnumerator MedalWarning()
     {
-        while(true)
+        while (true)
         {
             if (_GameObjects[(int)GameObjectsName.MedalBox].activeInHierarchy)
                 _GameObjects[(int)GameObjectsName.MedalBox].SetActive(false);
@@ -349,13 +349,13 @@ public class HUD : MonoBehaviour
             //{
             //    var _NewName = name.Split('_');
             //    _Texts[(int)TextsName.Accessory1].text = _NewName[0] + " " + _NewName[1];
-                
+
             //}
             //else
             //{
             //    _Texts[(int)TextsName.Accessory1].text = name;
             //}
-           
+
 
         }
         else
@@ -370,9 +370,9 @@ public class HUD : MonoBehaviour
             //{
             //    _Texts[(int)TextsName.Accessory2].text = name;
             //}
-            
+
         }
-            
+
     }
 
     public void PauseMenuInteraction()
@@ -404,14 +404,15 @@ public class HUD : MonoBehaviour
 
         var _MissionCurrentTime = Quest.currentQuest.currentTime;
 
-        _Images[(int)ImagesName.RestartResult].gameObject.SetActive(true);
+        //_Images[(int)ImagesName.RestartResult].gameObject.SetActive(true);
         _Images[(int)ImagesName.GarageResult].gameObject.SetActive(true);
 
         _Texts[(int)TextsName.QuestResult].gameObject.SetActive(true);
 
         if (missionCompleted)
         {
-            var _MissionData = MenuInizialeContainer.instance.zoneName + MenuInizialeContainer.instance.zoneName;
+            var _MissionData = MenuInizialeContainer.instance.zoneName + MenuInizialeContainer.instance.missionName;
+            print(_MissionData);
 
             _Texts[(int)TextsName.TimeResult].text = TimeConversion.RacingTime(_MissionCurrentTime);
             _Texts[(int)TextsName.TimeResult].gameObject.SetActive(true);
@@ -422,18 +423,20 @@ public class HUD : MonoBehaviour
             _Images[(int)ImagesName.ResultMedal].sprite = _Images[(int)ImagesName.Medal].sprite;
             _Images[(int)ImagesName.ResultMedal].gameObject.SetActive(true);
 
-            if (DataContainer.MissionAvabile(_MissionData) && DataContainer.NewRecordCheck(_MissionData, _MissionCurrentTime))
+            print("Mission avabile " + DataContainer.MissionAvabile(_MissionData));
+            print("New record check " + DataContainer.NewRecordCheck(_MissionData, _MissionCurrentTime));
+
+            _Texts[(int)TextsName.TimeResult].transform.parent.gameObject.SetActive(true);
+
+            if (DataContainer.MissionAvabile(_MissionData))
             {
                 if (DataContainer.NewRecordCheck(_MissionData, _MissionCurrentTime))
                 {
+                    _Texts[(int)TextsName.NewRecordResult].transform.parent.gameObject.SetActive(true);
                     StartCoroutine(ResultRecordFlash());
                 }
+                
             }
-            else
-            {
-                StartCoroutine(ResultRecordFlash());
-            }
-
         }
         else
         {
@@ -461,12 +464,41 @@ public class HUD : MonoBehaviour
         }
     }
 
+    public void ChangeMedalSprite(string fuelValue, string newSprite)
+    {
+        _Texts[(int)TextsName.MedalTime].text = fuelValue;
+
+        if (newSprite == "Gold")
+        {
+            _Images[(int)ImagesName.Medal].sprite = _GoldMedal;
+        }
+        else if (newSprite == "Silver")
+        {
+            _Images[(int)ImagesName.Medal].sprite = _SilverMedal;
+        }
+        else if(newSprite == "Bronze")
+        {
+            _Images[(int)ImagesName.Medal].sprite = _BronzeMedal;
+        }
+        else if(newSprite == "None")
+        {
+            //_Images[(int)ImagesName.Medal].sprite = _CrossSprite;
+        }
+
+    } 
+
     private IEnumerator ResultRecordFlash()
     {
         _Texts[(int)TextsName.NewRecordResult].text = TimeConversion.RacingTime(Quest.currentQuest.currentTime);
+        print("Flash coroutine");
+
+
+
 
         while (true)
         {
+
+            print("Flash coroutine");
             if (_Texts[(int)TextsName.NewRecordResult].gameObject.activeInHierarchy)
             {
                 _Texts[(int)TextsName.NewRecordResult].gameObject.SetActive(false);
@@ -475,53 +507,54 @@ public class HUD : MonoBehaviour
             {
                 _Texts[(int)TextsName.NewRecordResult].gameObject.SetActive(true);
             }
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSecondsRealtime(0.2f);
         }
     }
 
     private IEnumerator ResultMenu()
     {
-        int _Index = 14;
+        int _Index = 13;
         bool _InputAvabile = true;
         Time.timeScale = 0;
         StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[_Index].transform, true));
+        _Images[_Index].sprite = _DarkBlue;
 
         while (true)
         {
-            if (Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 && _InputAvabile && _Index < 15)
-            {
-                _Images[_Index].sprite = _LightBlue;
+            //if (Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 && _InputAvabile && _Index < 15)
+            //{
+            //    _Images[_Index].sprite = _LightBlue;
 
-                StartCoroutine(_LerpCoroutineStart = ScaleMenu(_Images[_Index].transform, false));
-                _Index++;
-                StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[_Index].transform, true));
+            //    StartCoroutine(_LerpCoroutineStart = ScaleMenu(_Images[_Index].transform, false));
+            //    _Index++;
+            //    StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[_Index].transform, true));
 
-                _Images[_Index].sprite = _DarkBlue;
+            //    _Images[_Index].sprite = _DarkBlue;
 
-            }
-            else if (Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 && _InputAvabile && _Index > 14)
-            {
-                _Images[_Index].sprite = _LightBlue;
+            //}
+            //else if (Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 && _InputAvabile && _Index > 14)
+            //{
+            //    _Images[_Index].sprite = _LightBlue;
 
-                StartCoroutine(_LerpCoroutineStart = ScaleMenu(_Images[_Index].transform, false));
-                _Index--;
-                StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[_Index].transform, true));
+            //    StartCoroutine(_LerpCoroutineStart = ScaleMenu(_Images[_Index].transform, false));
+            //    _Index--;
+            //    StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[_Index].transform, true));
 
-                _Images[_Index].sprite = _DarkBlue;
-            }
+            //    _Images[_Index].sprite = _DarkBlue;
+            //}
 
             if (Input.GetButtonDown(InputContainer.SUBMIT))
             {
-                if (_Index == 14)
-                {
-                    Time.timeScale = 1;
-                    StartCoroutine(SceneLoader.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
-                }
-                else
-                {
-                    Time.timeScale = 1;
-                    StartCoroutine(SceneLoader.LoadSceneAsync(ScenesContainer.MENU_SELEZIONE));
-                }
+                //if (_Index == 14)
+                //{
+                //    Time.timeScale = 1;
+                //    StartCoroutine(SceneLoader.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
+                //}
+                //if
+                //{
+                Time.timeScale = 1;
+                StartCoroutine(SceneLoader.LoadSceneAsync(ScenesContainer.MENU_SELEZIONE));
+                //}
             }
 
             if (!_InputAvabile)
@@ -538,20 +571,20 @@ public class HUD : MonoBehaviour
         if (!_MissionCompleted)
         {
             int _IndexVertical = 5;
-            int _IndexHorizontal = 9;
+            int _IndexHorizontal = 8;
             bool _InputAvabile = true;
             bool _FistMenuTrigger = true;
             bool _SecondMenuTrigger = true;
 
             //////////////////RESET ICONS/////////////
             _Images[(int)ImagesName.Resume].sprite = _DarkBlue;
-            _Images[(int)ImagesName.Restart].sprite = _LightBlue;
+            //_Images[(int)ImagesName.Restart].sprite = _LightBlue;
             _Images[(int)ImagesName.Garage].sprite = _LightBlue;
             _Images[(int)ImagesName.Yes].sprite = _DarkBlue;
             _Images[(int)ImagesName.No].sprite = _LightBlue;
 
             _Images[(int)ImagesName.Resume].transform.localScale = new Vector3(_StartingXScale, 1, 1);
-            _Images[(int)ImagesName.Restart].transform.localScale = new Vector3(_StartingXScale, 1, 1);
+            //_Images[(int)ImagesName.Restart].transform.localScale = new Vector3(_StartingXScale, 1, 1);
             _Images[(int)ImagesName.Garage].transform.localScale = new Vector3(_StartingXScale, 1, 1);
             _Images[(int)ImagesName.Yes].transform.localScale = new Vector3(_StartingXScale, 1, 1);
             _Images[(int)ImagesName.No].transform.localScale = new Vector3(_StartingXScale, 1, 1);
@@ -582,7 +615,7 @@ public class HUD : MonoBehaviour
 
                         AudioManager.Audio.PlayMenuSound(MenuSounds.ChangeSelection);
                     }
-                    else if (Input.GetAxisRaw(InputContainer.VERTICAL) < 0 && _InputAvabile && _IndexVertical < 7)
+                    else if (Input.GetAxisRaw(InputContainer.VERTICAL) < 0 && _InputAvabile && _IndexVertical < 6)
                     {
 
                         _InputAvabile = false;
@@ -599,7 +632,7 @@ public class HUD : MonoBehaviour
 
                     if (Input.GetButtonDown(InputContainer.SUBMIT) && !_Images[(int)ImagesName.Confirm].gameObject.activeInHierarchy)
                     {
-                        if (_IndexVertical == 6 || _IndexVertical == 7)
+                        if (/*_IndexVertical == 6 ||*/ _IndexVertical == 6)
                         {
                             _Images[(int)ImagesName.Confirm].gameObject.SetActive(true);
                             _Images[(int)ImagesName.Yes].transform.localScale = new Vector3(_StartingXScale, 1, 1);
@@ -626,7 +659,7 @@ public class HUD : MonoBehaviour
                         StartCoroutine(_LerpCoroutineIncrese = ScaleMenu(_Images[(int)ImagesName.Yes].transform, true));
                     }
 
-                    if (Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 && _InputAvabile && _IndexHorizontal < 10)
+                    if ((Input.GetAxisRaw(InputContainer.HORIZONTAL) > 0 ||  Input.GetAxisRaw(InputContainer.RADIO_CHANGE) > 0) && _InputAvabile && _IndexHorizontal < 9)
                     {
                         _Images[_IndexHorizontal].sprite = _LightBlue;
 
@@ -637,7 +670,7 @@ public class HUD : MonoBehaviour
                         _Images[_IndexHorizontal].sprite = _DarkBlue;
 
                     }
-                    else if (Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 && _InputAvabile && _IndexHorizontal > 9)
+                    else if ((Input.GetAxisRaw(InputContainer.HORIZONTAL) < 0 || Input.GetAxisRaw(InputContainer.RADIO_CHANGE) < 0) && _InputAvabile && _IndexHorizontal > 8)
                     {
                         _Images[_IndexHorizontal].sprite = _LightBlue;
 
@@ -650,23 +683,23 @@ public class HUD : MonoBehaviour
 
                     if (Input.GetButtonDown(InputContainer.SUBMIT))
                     {
-                        if (_IndexVertical == 6 && _IndexHorizontal == 9)
-                        {
-                            Time.timeScale = 1;
-                            StartCoroutine(SceneLoader.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
-                        }
-                        else if (_IndexVertical == 7 && _IndexHorizontal == 9)
+                        //if (_IndexVertical == 7 && _IndexHorizontal == 9)
+                        //{
+                        //    Time.timeScale = 1;
+                        //    StartCoroutine(SceneLoader.LoadSceneAsync(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name));
+                        //}
+                        if (_IndexVertical == 6 && _IndexHorizontal == 8)
                         {
                             Time.timeScale = 1;
                             StartCoroutine(SceneLoader.LoadSceneAsync(ScenesContainer.MENU_SELEZIONE));
                         }
-                        else if (_IndexHorizontal == 10)
+                        else if (_IndexHorizontal == 9)
                         {
                             _Images[(int)ImagesName.Confirm].gameObject.SetActive(false);
                             _Images[(int)ImagesName.Yes].sprite = _DarkBlue;
                             _Images[(int)ImagesName.No].sprite = _LightBlue;
                             _SecondMenuTrigger = true;
-                            _IndexHorizontal = 9;
+                            _IndexHorizontal = 8;
                         }
 
 
@@ -678,7 +711,7 @@ public class HUD : MonoBehaviour
                         _Images[(int)ImagesName.Yes].sprite = _DarkBlue;
                         _Images[(int)ImagesName.No].sprite = _LightBlue;
                         _SecondMenuTrigger = true;
-                        _IndexHorizontal = 9;
+                        _IndexHorizontal = 8;
                         AudioManager.Audio.PlayMenuSound(MenuSounds.MenuBack);
                     }
 
@@ -687,7 +720,7 @@ public class HUD : MonoBehaviour
 
                 if (!_InputAvabile)
                 {
-                    _InputAvabile = (Input.GetAxisRaw(InputContainer.VERTICAL) == 0 && Input.GetAxisRaw(InputContainer.HORIZONTAL) == 0);
+                    _InputAvabile = (Input.GetAxisRaw(InputContainer.VERTICAL) == 0 && Input.GetAxisRaw(InputContainer.HORIZONTAL) == 0 && Input.GetAxisRaw(InputContainer.RADIO_CHANGE) == 0);
                 }
                 yield return null;
             }

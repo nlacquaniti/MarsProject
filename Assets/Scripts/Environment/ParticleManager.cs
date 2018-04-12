@@ -40,8 +40,8 @@ public class ParticleManager : MonoBehaviour
 
         if (Mathf.Abs(NewVehicleController.vehicleController.currentSpeed) > 10)
         {
-            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
-            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
+            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 0.5f, Time.deltaTime / 2);
+            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 0.5f, Time.deltaTime / 2);
         }
         else
         {
@@ -62,8 +62,8 @@ public class ParticleManager : MonoBehaviour
         
         if (Mathf.Abs(NewVehicleController.vehicleController.currentSpeed) > 10)
         {
-            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 2f, Time.deltaTime / 2);
-            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 2f, Time.deltaTime / 2);
+            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
+            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
         }
         else
         {
@@ -84,8 +84,8 @@ public class ParticleManager : MonoBehaviour
         
         if (Mathf.Abs(NewVehicleController.vehicleController.currentSpeed) > 10)
         {
-            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
-            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 1f, Time.deltaTime / 2);
+            rightEmission.rateOverDistance = Mathf.Lerp(rightEmission.rateOverDistance.constantMax, 0.5f, Time.deltaTime / 2);
+            leftEmission.rateOverDistance = Mathf.Lerp(leftEmission.rateOverDistance.constantMax, 0.5f, Time.deltaTime / 2);
         }
         else
         {

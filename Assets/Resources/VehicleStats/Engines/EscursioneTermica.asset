@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: EscursioneTermica
   m_EditorClassIdentifier: 
   speed: 0.15
-  acceleration: 0.15
-  fuelConsumption: 0.1
+  acceleration: 0.3
+  fuelConsumption: -0.1
   adherence1: 0
   adherence2: 0
   adherence3: 0

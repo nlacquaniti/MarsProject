@@ -14,7 +14,8 @@
                         SPHERER = "SphereR",
                         ACCESSORYDOWN = "Accessory1",
                         ACCESSORYUP = "Accessory3",
-                        ACCESSORYRIGHT = "Accessory4";
+                        ACCESSORYRIGHT = "Accessory4",
+                        RADIO_CHANGE = "RadioChange";
 
 
 }

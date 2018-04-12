@@ -12,19 +12,19 @@ MonoBehaviour:
   m_Name: Mission5
   m_EditorClassIdentifier: 
   _Gold:
-  - 150
-  - 270
+  - 180
+  - 200
   - 300
   - 200
   _Silver:
-  - 200
-  - 520
+  - 285
+  - 250
   - 600
-  - 350
-  _Bronze:
   - 300
-  - 600
+  _Bronze:
+  - 390
+  - 330
   - 800
-  - 425
-  _SelectedQuest: 01000000020000000200000003000000
+  - 400
+  _SelectedQuest: 01000000020000000200000001000000
   _Created: 01010101
